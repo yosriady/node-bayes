@@ -15,21 +15,60 @@ var TRAINING_DATA = [
             ['Rain',75,80,'Weak','Yes'],
             ['Sunny',75,70,'Strong','Yes'],
             ['Overcast',72,90,'Strong','Yes'],
-            ['Overcast',81,75,'Weak','Yes'],
-            ['Rain',71,91,'Strong','No']
+            ['Overcast',81,75,'Weak','Yes']
         ];
 
 describe('NaiveBayes', function() {
   describe('new()', function() {
     it('should initialize correctly on valid input', function() {
-      // Initialize classifier
       var cls = new bayes.NaiveBayes({
         columns: TRAINING_COLUMNS,
         data: TRAINING_DATA
       });
-
-      debugger;
-
+      cls.add(['Rain',71,91,'Strong','No']);
     });
+
+    it('should throw error on invalid input', function() {
+      assert.throws(function() {
+        return new bayes.NaiveBayes({
+          columns: TRAINING_COLUMNS,
+          data: [['Rain',71,91,'Strong','No'],
+                 ['Sunny','95','Weak','No']]
+        });
+      }, Error);
+    });
+
+    it('should validate sizes', function() {
+      var cls = new bayes.NaiveBayes({
+        columns: ['weather', 'temperature', 'humidity', 'wind', 'play?']
+      });
+
+      assert.throws(function() { cls.add(['Rain',71,91]);},
+                    Error);
+    });
+
+    it('should validate types', function() {
+      var cls = new bayes.NaiveBayes({
+        columns: ['weather', 'temperature', 'humidity', 'wind', 'play?'],
+        data: [
+          ['Sunny',85,85,'Weak','No']
+        ]
+      });
+      assert.throws(function() { cls.add(['Rain','71','91','Strong','No']);},
+                    Error);
+    });
+
+  });
+
+  describe('add()', function() {
+    // TODO
+  });
+
+  describe('train()', function() {
+    // TODO
+  });
+
+  describe('classify()', function() {
+    // TODO
   });
 });
