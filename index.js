@@ -217,12 +217,14 @@ NaiveBayes.prototype.predict = function(sample) {
     }
   });
 
+  var keys = _.keys(answer);
+  var verboseAnswer = _.max(keys, function(k) { return answer[k];});
+
   if (!this.verbose) {
-    var keys = _.keys(answer);
-    var verboseAnswer = _.max(keys, function(k) { return answer[k];});
     return verboseAnswer;
   }
 
+  answer.answer = verboseAnswer;
   return answer;
 };
 
