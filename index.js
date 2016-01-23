@@ -10,7 +10,7 @@ var NaiveBayes = function(options) {
   if (_.uniq(options.columns).length !== options.columns.length) {
     throw new Error('ValidationError: column names must be unique.');
   }
-  this.columns = options.columns;
+  this.columns = options.columns; // TODO: strip whitespace from column names?
   this.labelIndex = options.labelIndex || this.columns.length - 1;
   this.verbose = options.verbose || false;
   this.eagerTraining = options.eagerTraining || true;
