@@ -60,15 +60,11 @@ describe('NaiveBayes', function() {
 
   });
 
-  describe('add()', function() {
-    // TODO
-  });
-
   describe('train()', function() {
     // TODO
   });
 
-  describe('classify()', function() {
+  describe('predict()', function() {
     // TODO
   });
 });
