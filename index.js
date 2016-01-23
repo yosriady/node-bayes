@@ -44,8 +44,9 @@ NaiveBayes.prototype.add = function(sample) {
   }
 };
 
-var validateSample = function(data, columns, columnTypes, sample) {
+var validateSample = function(data, columns, columnTypes, sample, options) {
   var errors = [];
+  var options = options || {};
 
   // Validate sample attribute sizes are consistent
   if (!_.isEqual(columns.length, sample.length)) {
@@ -57,7 +58,9 @@ var validateSample = function(data, columns, columnTypes, sample) {
   if (!_.isEmpty(data)) {
     _.each(columnTypes, function(expectedType, index) {
       var actual = typeof sample[index];
-      if (!_.isEqual(expectedType, actual)) {
+      if(options.allowNull && _.isNull(sample[index])) {
+        // skip null
+      } else if (!_.isEqual(expectedType, actual)) {
         errors.push('Expected type of attribute ' + columns[index] +
                     ' at index ' + index + ' to be ' + expectedType + ' but is ' +
                     actual);
@@ -76,7 +79,7 @@ var validateSamples = function(data, columns, columnTypes) {
     errors = validateSample(data, columns, columnTypes, sample);
 
     if (!_.isEmpty(errors)) {
-      errors.unshift('Element at index ' + index + ' has errors');
+      errors.unshift('Element at index ' + errors.length + ' has errors');
       return true;
     }
 
@@ -183,7 +186,8 @@ NaiveBayes.prototype.predict = function(sample) {
   var errors = validateSample(this.data,
                               blindColumnValues,
                               blindColumnTypes,
-                              sample);
+                              sample,
+                              {allowNull: true});
   if (!_.isEmpty(errors)) {
     throw new Error('ValidationError: ' + errors.join());
   };
@@ -203,6 +207,10 @@ NaiveBayes.prototype.predict = function(sample) {
     if (isNumericColumn) {
       var sampleValue = sample[columnIndex];
       _.each(_.keys(probabilities[columnName]), function(labelValue) {
+        if (_.isNull(labelValue)) { // Skipped columns
+          answer[labelValue] = (answer[labelValue] * 1) || 1;
+        };
+
         var obj = probabilities[columnName][labelValue];
         var mean = obj.mean;
         var std = obj.std;
@@ -212,6 +220,10 @@ NaiveBayes.prototype.predict = function(sample) {
       });
     } else {
       _.each(_.keys(columnValueProbabilities), function(labelValue) {
+        if (_.isNull(labelValue)) { // Skipped columns
+          answer[labelValue] = (answer[labelValue] * 1) || 1;
+        };
+
         answer[labelValue] = (answer[labelValue] * columnValueProbabilities[labelValue]) || columnValueProbabilities[labelValue];
       });
     }

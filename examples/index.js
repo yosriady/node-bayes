@@ -51,5 +51,4 @@ var cls = new bayes.NaiveBayes({
 });
 cls.train();
 var answer = cls.predict(['Sunny', 66, 90, 'Strong']);
-
 console.log(answer);
