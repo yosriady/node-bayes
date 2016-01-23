@@ -11,10 +11,17 @@ var NaiveBayes = function(options) {
   this.verbose = options.verbose || false;
   this.eagerTraining = options.eagerTraining || true;
 
+  // Introspect column types of data
+  if (!_.isEmpty(options.data)) {
+    this.columnTypes = _.map(options.data[0], function(columnValue) {return typeof columnValue;});
+  } else {
+    throw new Error('Your data should at least contain one row. Data cannot be empty.');
+  }
+
   // Validate every sample in data
-  var errors = validateSamples(options.data, this.columns);
+  var errors = validateSamples(options.data, this.columns, this.columnTypes);
   if (_.isEmpty(errors)) {
-    this.data = options.data || [];
+    this.data = options.data;
     this.lastSampleAddedAt = Date.now();
   } else {
     throw new Error('ValidationError: ' + errors.join());
@@ -25,7 +32,7 @@ var NaiveBayes = function(options) {
 };
 
 NaiveBayes.prototype.add = function(sample) {
-  var errors = validateSample(this.data, this.columns, sample);
+  var errors = validateSample(this.data, this.columns, this.columnTypes, sample);
   if (_.isEmpty(errors)) {
     this.data.push(sample);
   } else {
@@ -33,7 +40,7 @@ NaiveBayes.prototype.add = function(sample) {
   }
 };
 
-var validateSample = function(data, columns, sample) {
+var validateSample = function(data, columns, columnTypes, sample) {
   var errors = [];
 
   // Validate sample attribute sizes are consistent
@@ -42,15 +49,13 @@ var validateSample = function(data, columns, sample) {
                 ', but sample has ' + sample.length);
   }
 
-  // Compare the types of the first sample in data and the current sample
-  // TODO: validate based on user-specified column_types attr if supplied, from forml json schema
+  // Compare the types samples, based on first sample
   if (!_.isEmpty(data)) {
-    _.each(data[0], function(attribute, index) {
-      var expected = typeof attribute;
+    _.each(columnTypes, function(expectedType, index) {
       var actual = typeof sample[index];
-      if (!_.isEqual(expected, actual)) {
+      if (!_.isEqual(expectedType, actual)) {
         errors.push('Expected type of attribute ' + columns[index] +
-                    ' at index ' + index + ' to be ' + expected + ' but is ' +
+                    ' at index ' + index + ' to be ' + expectedType + ' but is ' +
                     actual);
       }
     });
@@ -58,13 +63,13 @@ var validateSample = function(data, columns, sample) {
   return errors;
 };
 
-var validateSamples = function(data, columns) {
+var validateSamples = function(data, columns, columnTypes) {
   var errors = [];
   if (_.isEmpty(data)) {
     return [];
   }
   var fault = _.find(data, function(sample) {
-    errors = validateSample(data, columns, sample);
+    errors = validateSample(data, columns, columnTypes, sample);
 
     if (!_.isEmpty(errors)) {
       errors.unshift('Element at index ' + index + ' has errors');
@@ -116,10 +121,12 @@ NaiveBayes.prototype.train = function() {
         frequencies[column][columnValue] = frequencies[column][columnValue] || {};
         probabilities[column][columnValue] = probabilities[column][columnValue] || {};
 
+        // todo: numeric attributes
+
+        // non-numeric attributes
         var count = _.size(_.filter(data, function(sample) {
           return _.isEqual(sample[columnIndex], columnValue) &&
         _.isEqual(sample[labelIndex], labelValue);}));
-
         frequencies[column][columnValue][labelValue] = count;
         probabilities[column][columnValue][labelValue] = (count + 1) / (frequencies[labelKey][labelValue] + columnValues.length);
       });
