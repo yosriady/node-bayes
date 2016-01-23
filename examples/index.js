@@ -33,7 +33,7 @@ var TRAINING_DATA = [
     ['Overcast',81,75,'Weak','Yes']
 ];
 
-// Normal attributes
+// Non-numeric attributes
 var cls = new bayes.NaiveBayes({
   columns: TRAINING_COLUMNS,
   data: TRAINING_DATA_SIMPLE,
@@ -43,5 +43,12 @@ cls.train();
 var answer = cls.predict(['Sunny', 'Cool', 'High', 'Strong']);
 console.log(answer);
 
-// Numeric Valued attributes
-// TODO
+// Numeric attributes
+var cls = new bayes.NaiveBayes({
+  columns: TRAINING_COLUMNS,
+  data: TRAINING_DATA,
+  verbose: true
+});
+cls.train();
+var answer = cls.predict(['Sunny', 66, 90, 'Strong']);
+console.log(answer);
