@@ -121,7 +121,7 @@ NaiveBayes.prototype.train = function() {
         _.isEqual(sample[labelIndex], labelValue);}));
 
         frequencies[column][columnValue][labelValue] = count;
-        probabilities[column][columnValue][labelValue] = count / frequencies[labelKey][labelValue];
+        probabilities[column][columnValue][labelValue] = (count + 1) / (frequencies[labelKey][labelValue] + columnValues.length);
       });
     });
   });
