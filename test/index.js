@@ -49,18 +49,6 @@ describe('NaiveBayes', function() {
       assert.throws(function() { cls.add(['Rain',71,91]);},
                     Error);
     });
-
-    it('should validate types', function() {
-      var cls = new bayes.NaiveBayes({
-        columns: ['weather', 'temperature', 'humidity', 'wind', 'play?'],
-        data: [
-          ['Sunny',85,85,'Weak','No']
-        ]
-      });
-      assert.throws(function() { cls.add(['Rain','71','91','Strong','No']);},
-                    Error);
-    });
-
   });
 
   describe('train()', function() {

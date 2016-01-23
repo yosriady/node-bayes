@@ -54,19 +54,6 @@ var validateSample = function(data, columns, columnTypes, sample, options) {
                 ', but sample has ' + sample.length);
   }
 
-  // Compare the types samples, based on first sample
-  if (!_.isEmpty(data)) {
-    _.each(columnTypes, function(expectedType, index) {
-      var actual = typeof sample[index];
-      if(options.allowNull && _.isNull(sample[index])) {
-        // skip null
-      } else if (!_.isEqual(expectedType, actual)) {
-        errors.push('Expected type of attribute ' + columns[index] +
-                    ' at index ' + index + ' to be ' + expectedType + ' but is ' +
-                    actual);
-      }
-    });
-  }
   return errors;
 };
 
