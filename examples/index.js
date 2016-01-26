@@ -41,6 +41,7 @@ var cls = new bayes.NaiveBayes({
 });
 cls.train();
 var answer = cls.predict(['Sunny', 'Cool', 'High', 'Strong']);
+console.log(cls.frequencies);
 console.log(answer);
 
 // Numeric attributes

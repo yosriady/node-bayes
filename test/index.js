@@ -50,12 +50,4 @@ describe('NaiveBayes', function() {
                     Error);
     });
   });
-
-  describe('train()', function() {
-    // TODO
-  });
-
-  describe('predict()', function() {
-    // TODO
-  });
 });

@@ -130,7 +130,6 @@ NaiveBayes.prototype.train = function() {
   });
 
   // Calculate frequencies, mean, standard deviation for numeric attributes
-  // TODO: refactor this to a separate method?
   var numericColumns = [];
   _.each(this.columnTypes, function(type, index) {
     var isNumericColumn = (columnTypes[index] === 'number');
@@ -207,7 +206,7 @@ NaiveBayes.prototype.predict = function(sample) {
       });
     } else {
       _.each(_.keys(columnValueProbabilities), function(labelValue) {
-        if (_.isNull(labelValue)) { // Skipped columns
+        if (_.isNull(labelValue)) { // Skip calculation for null columns
           answer[labelValue] = (answer[labelValue] * 1) || 1;
         };
 
@@ -227,8 +226,7 @@ NaiveBayes.prototype.predict = function(sample) {
   return answer;
 };
 
-// TODO: refactor to separate normal-distribution module, make an interface so
-// we can substitute different distributions i.e. dependency injection
+// Calculates probability of a numeric value
 function numericProbability(value, mean, std) {
   return (1 / (std * math.sqrt(2 * math.pi))) *
                             math.pow(math.e,
