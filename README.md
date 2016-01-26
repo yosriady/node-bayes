@@ -80,6 +80,7 @@ console.log(answer);
 | verbose       | boolean  | If set to true, returns full probability breakdown for each class value. Defaults to false.                                                                    |
 | eagerTraining | boolean  | If set to true, runs train() on predict() if there are dirty samples.                                                                                          |
 | columnTypes   | string[] | ColumnTypes of your dataset. Used for validation of samples in your dataset. If not supplied, the column types of the first sample is inspected automatically. |
+| stripWhitespace | boolean  | If set to true, whitespace in column names are stripped. Defaults to true.
 
 ## Running Tests
 
