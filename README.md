@@ -1,6 +1,8 @@
 node-bayes
 ========
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/yosriady/node-bayes.svg)](https://greenkeeper.io/)
+
 > node-bayes is a Naive Bayes classifier for Node.js. Built-in support for numeric attributes and Laplace smoothing.
 
 ## Getting Started
